@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+if [[ "$ENV" == "PRODUCTION" ]]; then
+    exit 0
+fi
+
+# set up repositories for node
+apt-get -y install software-properties-common python-software-properties
+add-apt-repository ppa:chris-lea/node.js
+apt-get -y update
+
+# install node most recent stable as well as npm
+apt-get -y install nodejs
+# symlink nodejs to node
+ln -sf `which nodejs` /usr/bin/node
+
+# now install node seed
+npm install -g etcd-seed
+# run seed
+etcd-seed /seed/dev.toml
+
