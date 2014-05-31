@@ -1,6 +1,9 @@
 FROM coreos/etcd
 MAINTAINER Jon Morehouse <jontmorehouse@gmail.com>
 
+ENV ETCD_HOST localhost
+ENV ETCD_PORT 4001
+
 # add data to environment
 ADD src /seed
 
