@@ -1,4 +1,4 @@
-# Beamio Etcd 
+# Docker Etcd
 > Etcd deployment for production/development environments on various apps
 
 ## Development
