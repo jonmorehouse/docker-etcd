@@ -1,7 +1,29 @@
 # Docker Etcd
 > Etcd deployment for production/development environments on various apps
 
-## Development
+## Usage
+
+Start an etcd service and optionally specify a file to seed key values from.
+
+Docker etcd uses [etcd-seed](https://github.com/jonmorehouse/etcd-seed) to fill the service at runtime.
+
+~~~ bash
+$ export ETCD_HOST=$(echo $DOCKER_HOST | awk -F':' '{ print $2 }' | sed "s|/||g")
+$ export ETCD_PORT=4001
+
+# clone docker-etcd
+$ git clone git@github.com:jonmorehouse/docker-etcd
+
+# add toml files to src/
+$ touch src/local.toml
+
+$ echo "name = \"Jon Morehouse\"" > src/local.toml
+
+# now to start up an etcd instance with this seed file locally...
+$ ./bin/start local
+~~~
+
+## Setting Up Docker
 
 Set up docker
 ~~~ bash
@@ -16,17 +38,8 @@ $ sudo apt-get install -y docker.io
 $ sudo ln -sf /usr/bin/docker.io /usr/local/bin/docker
 ~~~
 
-Start the etcd container listening on 4001
-~~~ bash
-# now run docker-etcd. This will bootstrap etcd and run on port 4001 by default
-$ docker run jonmorehouse/etcd -e "ENV=development"
-~~~
+## Hacking
 
-Set environment to point to correct etcd installation
-~~~ bash
-$ export ETCD_HOST=localhost
-$ export ETCD_PORT=4001
-~~~
+This is still a pretty early project. Feel free to fork and upload your own scripts to keep this growing. 
 
-
-
+I use etcd in almost all of my projects so I'm maintaining a private fork of this project where I add in custom src/*toml files for various projects. I simply start etcd on different ports as I need it. 
