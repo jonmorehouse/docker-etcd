@@ -1,0 +1,30 @@
+#!/usr/bin/env zsh
+
+ETCD_PORT=$ETCD_PORT
+
+# if no args - print usage
+if [[ $# -lt 0 ]];then
+  echo "Usage: [debug,env,port]"
+  echo "\tshell -- open a docker shell"
+  echo "\tenv -- set env to some value"
+  echo "\tport -- set port to some value" 
+
+  echo "\nExample Usage:"
+  echo "\tmac shell -- run -i -t shell exposed on $ETCD_PORT"
+  echo "\tmac dev -- run a docker etcd daemon with the dev seed file"
+  echo "\tmac dev 4002 -- same as mac dev but with 4002 instead of $ETCD_PORT"
+  echo "\tmac 4002 -- defaults, exposed on different port tho"
+  return 0
+fi
+
+# regex to match a number
+number_re='^[0-9]+$'
+
+host=$ETCD_PORT # use default port unless specified
+cmd_type=daemon # run as daemon unless shell is passed
+env=dev # seed dev.toml by default
+
+
+#command="run -p $ETCD_PORT:$ETCD_PORT -e "ETCD_PORT=$ETCD_PORT ETCD_HOST=$ETCD_HOST" etcd-docker"
+# working command = docker run -d -t -p 4001:4001 -e ENV=dev docker-etcd
+
