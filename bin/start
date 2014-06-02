@@ -39,6 +39,6 @@ done
 if [[ $cmd_type == "shell" ]];then
   docker run -i -t -p $port:$port -e "ENV=$env" --entrypoint=/bin/bash docker-etcd -s
 else
-  docker run -d -t -p $port:$port -e "ENV=$env" docker-etcd --addr="$ETCD_HOST:$port"
+  docker run -d -t -p "$port:$port" -e "ENV=$env" -e "ETCD_PORT=$port" docker-etcd --addr="$ETCD_HOST:$port"
 fi
 
