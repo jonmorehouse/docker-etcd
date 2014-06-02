@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+/opt/etcd/bin/etcd "$@" &
+
+# use seed file if needed
+if [[ ! -z "$SEED" ]];then
+
+  filepaths=(
+   "$SEED"
+   "$SEED.toml" 
+   "$SEED_PATH/$SEED" 
+   "$SEED_PATH/$SEED.toml"
+  )
+
+  # generate the seed file path
+  for i in "${filepaths[@]}"
+  do
+    # seed the etcd dir if file exists
+    if [[ -f "$i" ]];then
+      etcd-seed $i
+    fi
+  done
+
+# try to find default seed file etc
+elif [[ ! "$(echo $ENV | awk '{ print tolower($0) }')" == "production" ]];then
+  etcd-seed "$SEED_PATH/$env.toml" 
+fi
+
+# bring etcd back to life!
+fg

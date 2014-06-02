@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-if [[ "$ENV" == "PRODUCTION" ]]; then
-    exit 0
-fi
-
 # set up repositories for node
 apt-get -y install software-properties-common python-software-properties
 add-apt-repository ppa:chris-lea/node.js
@@ -16,5 +12,4 @@ ln -sf `which nodejs` /usr/bin/node
 
 # install etcd-seed and seed etcd
 npm install -g coffee-script etcd-seed
-etcd-seed /seed/dev.toml
 
