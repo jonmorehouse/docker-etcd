@@ -35,8 +35,13 @@ for arg in "$@";do
   fi
 done
 
-# now run the correct commands as need
-#command="run -p $ETCD_PORT:$ETCD_PORT -e "ETCD_PORT=$ETCD_PORT ETCD_HOST=$ETCD_HOST" etcd-docker"
-# working command = docker run -d -t -p 4001:4001 -e ENV=dev docker-etcd
+# now create command to be run
+if [[ $cmd_type == "shell" ]];then
+  docker run -i -t -p $port:$port -e "ETCD_HOST=$ETCD_HOST ETCD_PORT=$port ENV=$env" \
+    --entrypoint=/bin/bash docker-etcd -s
+else
+  docker run -d -t -p $port:$port -e "ETCD_HOST=$ETCD_HOST ETCD_PORT=$port ENV=$env" \
+    docker-etcd
+fi
 
 
