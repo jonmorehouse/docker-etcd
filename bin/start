@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
-/opt/etcd/bin/etcd "$@" &
+# all job control
+set -m
+
+# start etcd with the correct parameters
+/opt/etcd/bin/etcd $@ &
 
 # use seed file if needed
 if [[ ! -z "$SEED" ]];then
@@ -22,7 +26,12 @@ if [[ ! -z "$SEED" ]];then
 
 # try to find default seed file etc
 elif [[ ! "$(echo $ENV | awk '{ print tolower($0) }')" == "production" ]];then
-  etcd-seed "$SEED_PATH/$env.toml" 
+  filepath="$SEED_PATH/$(echo $ENV | awk '{ print tolower($0) }').toml"
+  if [[ -f $filepath ]];then
+    echo "Filepath $filepath doesn't exist"
+  else
+    etcd-seed $filepath
+  fi
 fi
 
 # bring etcd back to life!
