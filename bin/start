@@ -27,9 +27,10 @@ if [[ ! -z "$SEED" ]];then
 # try to find default seed file etc
 elif [[ ! "$(echo $ENV | awk '{ print tolower($0) }')" == "production" ]];then
   filepath="$SEED_PATH/$(echo $ENV | awk '{ print tolower($0) }').toml"
-  if [[ -f $filepath ]];then
+  if [[ ! -f $filepath ]];then
     echo "Filepath $filepath doesn't exist"
   else
+    echo "LOADING FILEPATH"
     etcd-seed $filepath
   fi
 fi
