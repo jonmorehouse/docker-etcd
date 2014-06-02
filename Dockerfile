@@ -11,9 +11,11 @@ ENV SEED_PATH /seed
 ADD src /seed
 
 # initialize and run seed script
-ADD bin/ /usr/local/bin/
+ADD bin/run /usr/local/bin/
+ADD bin/build /usr/local/bin/
 RUN chmod +x /usr/local/bin/*
+
 RUN build
 
 # Add new entrypoint
-ENTRYPOINT ["/usr/local/bin/start"]
+ENTRYPOINT ["/usr/local/bin/run"]

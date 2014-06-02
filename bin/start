@@ -1,39 +1,47 @@
-#!/usr/bin/env bash
-# all job control
-set -m
+#!/usr/bin/env zsh
 
-# start etcd with the correct parameters
-/opt/etcd/bin/etcd $@ &
+ETCD_PORT=$ETCD_PORT
 
-# use seed file if needed
-if [[ ! -z "$SEED" ]];then
+# if no args - print usage
+if [[ $# -lt 0 ]];then
+  echo "Usage: [debug,env,port]"
+  echo "\tshell -- open a docker shell"
+  echo "\tenv -- set env to some value"
+  echo "\tport -- set port to some value" 
 
-  filepaths=(
-   "$SEED"
-   "$SEED.toml" 
-   "$SEED_PATH/$SEED" 
-   "$SEED_PATH/$SEED.toml"
-  )
-
-  # generate the seed file path
-  for i in "${filepaths[@]}"
-  do
-    # seed the etcd dir if file exists
-    if [[ -f "$i" ]];then
-      etcd-seed $i
-    fi
-  done
-
-# try to find default seed file etc
-elif [[ ! "$(echo $ENV | awk '{ print tolower($0) }')" == "production" ]];then
-  filepath="$SEED_PATH/$(echo $ENV | awk '{ print tolower($0) }').toml"
-  if [[ ! -f $filepath ]];then
-    echo "Filepath $filepath doesn't exist"
-  else
-    echo "LOADING FILEPATH"
-    etcd-seed $filepath
-  fi
+  echo "\nExample Usage:"
+  echo "\tmac shell -- run -i -t shell exposed on $ETCD_PORT"
+  echo "\tmac dev -- run a docker etcd daemon with the dev seed file"
+  echo "\tmac dev 4002 -- same as mac dev but with 4002 instead of $ETCD_PORT"
+  echo "\tmac 4002 -- defaults, exposed on different port tho"
+  return 0
 fi
 
-# bring etcd back to life!
-fg
+# regex to match a number
+int_re='^[0-9]+$'
+
+port=$ETCD_PORT # use default port unless specified
+cmd_type=daemon # run as daemon unless shell is passed
+env=dev # seed dev.toml by default
+
+# iterate through arguments
+for arg in "$@";do
+  if [[ $arg =~ $int_re ]];then
+    port=$arg
+  elif [[ $arg == "shell" ]];then
+    cmd_type=$arg
+  else
+    env=$arg
+  fi
+done
+
+# now create command to be run
+if [[ $cmd_type == "shell" ]];then
+  docker run -i -t -p $port:$port -e "ETCD_HOST=$ETCD_HOST ETCD_PORT=$port ENV=$env" \
+    --entrypoint=/bin/bash docker-etcd -s
+else
+  docker run -d -t -p $port:$port -e "ETCD_HOST=$ETCD_HOST ETCD_PORT=$port ENV=$env" \
+    docker-etcd
+fi
+
+
