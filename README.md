@@ -23,6 +23,16 @@ $ echo "name = \"Jon Morehouse\"" > src/local.toml
 $ ./bin/start local
 ~~~
 
+### Hot swap config
+
+You can easily reload configuration values with `etcd-seed`
+~~~ bash
+# make sure that $ETCD_HOST and $ETCD_PORT are properly set
+
+$ etcd-seed src/your_config.toml
+
+~~~
+
 ## Setting Up Docker
 
 Set up docker
