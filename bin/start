@@ -1,5 +1,8 @@
 #!/usr/bin/env zsh
 
+# make sure docker image is built
+docker build -t docker-etcd - < ../Dockerfile
+
 ETCD_PORT=$ETCD_PORT
 
 # if no args - print usage
