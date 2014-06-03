@@ -1,7 +1,10 @@
 #!/usr/bin/env zsh
 
+# base directory
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+
 # make sure docker image is built
-docker build -t docker-etcd - < ../Dockerfile
+docker build -t docker-etcd - < $DIR/Dockerfile
 
 ETCD_PORT=$ETCD_PORT
 
