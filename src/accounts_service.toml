@@ -1,7 +1,0 @@
-[accounts_service]
-
-postgres = "postgres://test:test@172.16.42.43:5432/accounts_service"
-
-
-
-
