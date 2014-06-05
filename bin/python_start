@@ -1,0 +1,21 @@
+#!/usr/bin/env python
+#vim: set filetype=python
+import clint
+import sys
+import os
+import subprocess
+
+def python_shell(command):
+
+    # run the command and grab stderr/stdout to check if git repo or not
+    output = subprocess.Popen(command, shell=True, stdout=sys.stdout, stderr=sys.stderr)
+
+
+
+
+
+
+
+
+
+
