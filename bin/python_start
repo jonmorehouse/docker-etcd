@@ -50,6 +50,3 @@ if c.Args().files:
         filepath = os.path.abspath(filepath)
         python_shell("etcd-seed %s" % filepath)
 
-# now shell in to the container, if desired
-        
-
