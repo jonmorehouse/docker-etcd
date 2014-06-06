@@ -7,31 +7,25 @@ Start an etcd service and optionally specify a file to seed key values from.
 
 Docker etcd uses [etcd-seed](https://github.com/jonmorehouse/etcd-seed) to fill the service at runtime.
 
+Install Dependencies
 ~~~ bash
-$ export ETCD_HOST=$(echo $DOCKER_HOST | awk -F':' '{ print $2 }' | sed "s|/||g")
+$ pip install -r requirements.txt
+$ npm install -g etcd-seed
+~~~
+
+Now start a new seeded etcd-instance
+~~~ bash
+$ export CONTAINER_HOST=$(echo $DOCKER_HOST | awk -F':' '{ print $2 }' | sed "s|/||g")
+$ export ETCD_HOST=$CONTAINER_HOST
 $ export ETCD_PORT=4001
 
 # clone docker-etcd
 $ git clone git@github.com:jonmorehouse/docker-etcd
 
-# add toml files to src/
-$ touch src/local.toml
-
-$ echo "name = \"Jon Morehouse\"" > src/local.toml
-
-# now to start up an etcd instance with this seed file locally...
-$ ./bin/start local
+# start a new container with a seed file
+$ ./bin/start -p 4001 ~/some_seed_file.yml
 ~~~
 
-### Hot swap config
-
-You can easily reload configuration values with `etcd-seed`
-~~~ bash
-# make sure that $ETCD_HOST and $ETCD_PORT are properly set
-
-$ etcd-seed src/your_config.toml
-
-~~~
 
 ## Setting Up Docker
 
