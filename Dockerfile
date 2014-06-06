@@ -5,17 +5,18 @@ MAINTAINER Jon Morehouse <jontmorehouse@gmail.com>
 ENV ETCD_HOST localhost
 ENV ETCD_PORT 4001
 ENV ENV dev
-ENV SEED_PATH /seed
 
-# add data to environment
-ADD src /seed
+# set up etcd-seed
+RUN apt-get -y install software-properties-common python-software-properties
+RUN add-apt-repository ppa:chris-lea/node.js
+RUN apt-get -y update
+# install node most recent stable as well as npm
+RUN apt-get -y install nodejs
+# symlink nodejs to node
+RUN ln -sf `which nodejs` /usr/bin/node
+# install etcd-seed and seed etcd
+RUN npm install -g coffee-script etcd-seed
 
-# initialize and run seed script
-ADD bin/run /usr/local/bin/
-ADD bin/build /usr/local/bin/
-RUN chmod +x /usr/local/bin/*
+# now create seed directory
+RUN mkdir /seed
 
-RUN build
-
-# Add new entrypoint
-ENTRYPOINT ["/usr/local/bin/run"]
