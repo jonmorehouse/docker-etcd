@@ -23,7 +23,7 @@ $ export ETCD_PORT=4001
 $ git clone git@github.com:jonmorehouse/docker-etcd
 
 # start a new container with a seed file
-$ ./bin/start -p 4001 ~/some_seed_file.yml
+$ ./bin/detcd -p 4001 ~/some_seed_file.yml
 ~~~
 
 
