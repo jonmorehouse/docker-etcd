@@ -1,7 +1,5 @@
 #!/usr/bin/env python 
 #flow-runtime: tmux
-#flow-setup: docker stop $(docker ps -a -q)
-#flow: 
 #vim: set filetype=python
 import clint as c
 import sys
@@ -27,21 +25,21 @@ def python_shell(command, grab = False):
 
 # ordered dictionary of args
 args = c.Args().grouped
-tag_name = args["t"][1] if args.get("-t") else "docker-etcd"
-
-if args.get("-k"):
-    # stop / delete old containers if necessary
-    python_shell("docker ps -a | grep %s | awk '{ print $1 }' | xargs -I '{}'  bash -c \"docker stop {}; docker rm {};\"" % tag_name)
+name = args["n"][1] if args.get("-n") else "docker-etcd"
 
 # build docker container
-python_shell("cd %s && docker build -t %s  . " % (base_dir, tag_name))
+python_shell("cd %s && docker build -t docker-etcd  . " % (base_dir))
 
 # start the container ...
 port = args["p"][1] if args.get("p") else 4001
 host = args["h"][1] if args.get("h") else os.getenv("ETCD_HOST")
 
+# stop / remove old containers
+stderr, stdout = python_shell("docker stop %s" % name, True)
+stderr, stdout = python_shell("docker rm %s" % name, True)
+
 # start up etcd for development purposes
-stderr, container_id = python_shell("docker run -d -t -p \"%s:%s\" %s --addr=\"%s:%s\"" % (port, port, tag_name, host, port), True)
+stderr, container_id = python_shell("docker run -d -t -p \"%s:%s\" --name=%s docker-etcd --addr=\"%s:%s\"" % (port, port, name, host, port), True)
 
 # handle the case of the system not working - usually a port
 if stderr:
