@@ -27,7 +27,11 @@ def python_shell(command, grab = False):
 
 # ordered dictionary of args
 args = c.Args().grouped
-tag_name = args["t"][1] if args.get("t") else "docker-etcd"
+tag_name = args["t"][1] if args.get("-t") else "docker-etcd"
+
+if args.get("-k"):
+    # stop / delete old containers if necessary
+    python_shell("docker ps -a | grep %s | awk '{ print $1 }' | xargs -I '{}'  bash -c \"docker stop {}; docker rm {};\"" % tag_name)
 
 # build docker container
 python_shell("cd %s && docker build -t %s  . " % (base_dir, tag_name))
